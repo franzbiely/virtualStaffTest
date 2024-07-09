@@ -7,8 +7,17 @@ import GoogleSignInButton from '../../component/googlelogin'; // Import your but
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
 export default function Home() {
+  const truncateText = (text:string, limit:number, ending = '...') => {
+    if (text.length <= limit) return text;
+    return text.substring(0, limit - ending.length) + ending + text.slice(-26); // Get last 26 characters (".apps.googleusercontent.com")
+  }
+
   const handleLoginSuccess = (response:any) => {
     // Handle successful login with Google response data
+    const truncatedText = truncateText(response.credential,5, '...')
+
+    localStorage.setItem('loggedUser', truncatedText)
+    
     window.location.href='/dashboard'
 
     console.log('Login successful, user data:', response);
