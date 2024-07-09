@@ -6,6 +6,9 @@
   padding: 6rem;
   min-height: 100vh;
 }
+.whiteColor {
+  color: #fff;
+}
 .myTable {
   background-color: #eee;
   border-collapse: collapse;

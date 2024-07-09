@@ -10,13 +10,19 @@ interface AddressI {
 }
 
 export default function Home() {
+  const [audit, setAudit] = useState<any>([]);
+
+
+
   const [data, setData] = useState<AddressI[]>([]);
   const [editId, setEditId] = useState('');
   const [editIp, setEditIP] = useState('');
   const [editLabel, setEditLabel] = useState('');
 
   const fetchData = async () => {
-
+    const res = await fetch('http://localhost:8000/api/cache');
+    const resDat= await res.json();
+    setAudit(resDat);
 
     const response = await fetch('http://localhost:8000/api/address');
     const responseData = await response.json();
@@ -64,7 +70,20 @@ export default function Home() {
           }
           </tbody>
         </table>
+        
       </div>
+      <div className={styles.whiteColor}>
+        <h3>Audit Trail</h3>
+          <pre>
+            {
+              audit.length > 0 ? 
+              audit.map((item:any) => (
+                <><span>{item.text}</span><br /></>
+              ))
+              : (<span>No Audit record...</span>)
+            }
+          </pre>
+        </div>
     </main>
   );
 }
