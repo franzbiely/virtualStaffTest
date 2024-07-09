@@ -2,7 +2,7 @@
 import Image from "next/image";
 import styles from "./../page.module.css";
 import { useEffect, useState } from "react";
-
+import AddressForm from "../../component/addressForm";
 interface AddressI {
   id: string,
   label: string,
@@ -12,6 +12,8 @@ interface AddressI {
 export default function Home() {
   const [data, setData] = useState<AddressI[]>([]);
   const fetchData = async () => {
+
+
     const response = await fetch('http://localhost:8000/api/address');
     const responseData = await response.json();
     setData(responseData);
@@ -24,6 +26,8 @@ export default function Home() {
   return (
     <main className={styles.main}>
       <div className={styles.description}>
+      <AddressForm fetchData={fetchData}/>
+      <hr />
         <table className={styles.myTable}>
           <thead>
             <tr>
