@@ -10,6 +10,12 @@ function AddressForm({fetchData, editFields}) {
     event.preventDefault(); 
     console.log({id})
     if(id !== '') {
+      await fetch('http://localhost:8000/api/cache', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({text: `DELETED #${id} by customer ${localStorage.getItem('loggedUser')} on timestamp : ${Date.now()}`}), // Convert data object to JSON string
+      });
+
       const response = await fetch(`http://localhost:8000/api/address/${id}`, {
         method: 'DELETE',
       });
@@ -30,6 +36,12 @@ function AddressForm({fetchData, editFields}) {
     try {
       // Add
       if(id === '') {
+        await fetch('http://localhost:8000/api/cache', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({text: `NEW RECORD by customer ${localStorage.getItem('loggedUser')} on timestamp : ${Date.now()}`}), // Convert data object to JSON string
+        });
+
         const response = await fetch('http://localhost:8000/api/address', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -43,6 +55,13 @@ function AddressForm({fetchData, editFields}) {
       }
       else {
         // Edit
+
+        await fetch('http://localhost:8000/api/cache', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({text: `UPDATED #${id} by customer ${localStorage.getItem('loggedUser')} on timestamp : ${Date.now()} | ${JSON.stringify(data)}`}), // Convert data object to JSON string
+        });
+
         const response = await fetch(`http://localhost:8000/api/address/${id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
