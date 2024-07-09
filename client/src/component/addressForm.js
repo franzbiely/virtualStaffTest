@@ -6,6 +6,22 @@ function AddressForm({fetchData, editFields}) {
   const [ip, setIp] = useState(editFields?.editIp || '');
   const [label, setLabel] = useState(editFields?.editLabel || '');
 
+  const handleRemove = async (event) => {
+    event.preventDefault(); 
+    console.log({id})
+    if(id !== '') {
+      const response = await fetch(`http://localhost:8000/api/address/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+      setIp(''); // Clear form fields after successful submission
+      setLabel('');
+      fetchData();
+    }
+  }
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
 
@@ -13,11 +29,6 @@ function AddressForm({fetchData, editFields}) {
 
     try {
       // Add
-      console.log(16, {
-        id,
-ip,
-label
-      })
       if(id === '') {
         const response = await fetch('http://localhost:8000/api/address', {
           method: 'POST',
@@ -90,6 +101,8 @@ label
         setIp('')
         setLabel('')
       }}>Cancel</button>
+      &nbsp;
+      <button onClick={handleRemove}>Delete</button>
     </form>
   );
 }
