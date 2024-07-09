@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-function AddressForm({fetchData}) {
-  const [ip, setIp] = useState('');
-  const [label, setLabel] = useState('');
+function AddressForm({fetchData, editFields}) {
+  console.log(4, {editFields})
+  const [id, setId] = useState(editFields?.editId || '');
+  const [ip, setIp] = useState(editFields?.editIp || '');
+  const [label, setLabel] = useState(editFields?.editLabel || '');
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent default form submission behavior
@@ -10,14 +12,35 @@ function AddressForm({fetchData}) {
     const data = { ip, label }; // Create data object for the fetch request
 
     try {
-      const response = await fetch('http://localhost:8000/api/address', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data), // Convert data object to JSON string
-      });
+      // Add
+      console.log(16, {
+        id,
+ip,
+label
+      })
+      if(id === '') {
+        const response = await fetch('http://localhost:8000/api/address', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data), // Convert data object to JSON string
+        });
 
-      if (!response.ok) {
-        throw new Error(`API request failed with status ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+
+      }
+      else {
+        // Edit
+        const response = await fetch(`http://localhost:8000/api/address/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data), // Convert data object to JSON string
+        });
+
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
       }
 
       alert('Address submitted successfully!'); // Success message
@@ -30,6 +53,12 @@ function AddressForm({fetchData}) {
       // You can display an error message to the user here
     }
   };
+
+  useEffect(() => {
+    setId(editFields.editId)
+    setIp(editFields.editIp)
+    setLabel(editFields.editLabel)
+  }, [editFields])
 
   return (
     <form onSubmit={handleSubmit}>
@@ -53,7 +82,14 @@ function AddressForm({fetchData}) {
         required
       />
       <br />
+      <br />
       <button type="submit">Submit</button>
+      &nbsp;
+      <button onClick={() => {
+        setId('')
+        setIp('')
+        setLabel('')
+      }}>Cancel</button>
     </form>
   );
 }
